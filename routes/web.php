@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Route;
 $idRegex = '[0-9]+';
 $slugRegex = '[0-9a-z\-]+';
 
-Route::get('/', [\App\Http\Controllers\HomeController::class, 'index']);
+// MODIFIÉ : Ajout de ->name('home') pour nommer la route d'accueil
+Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
 Route::get('/biens',[\App\Http\Controllers\PropertyController::class, 'index'])->name('property.index');
 Route::get('/biens/{slug}-{property}', [\App\Http\Controllers\PropertyController::class, 'show'])->name('property.show')->where([
     'property'=> $idRegex,
@@ -16,7 +18,6 @@ Route::get('/biens_locatif/{slug}-{rental}', [\App\Http\Controllers\RentalContro
     'rental'=> $idRegex,
     'slug'=> $slugRegex
 ]);
-
 
 
 Route::post('/biens/{property}/contact', [\App\Http\Controllers\PropertyController::class, 'contact'])->name('property.contact')->where([
@@ -38,7 +39,8 @@ Route::delete('/logout', [\App\Http\Controllers\AuthController::class, 'logout']
 Route::get('/register', [\App\Http\Controllers\AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register']);
 
-Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+// AJOUTÉ : 'admin' au tableau des middlewares pour protéger la section admin
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
 
     Route::resource('property', \App\Http\Controllers\Admin\PropertyController::class)->except(['show']);
     Route::resource('option', \App\Http\Controllers\Admin\OptionController::class)->except(['show']);
@@ -46,8 +48,3 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::resource('feature', \App\Http\Controllers\Admin\FeatureController::class)->except(['show']);
 
 });
-
-
-
-
-
