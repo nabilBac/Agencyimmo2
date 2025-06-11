@@ -11,7 +11,7 @@
     <title>@yield('title') |Administration</title>
 
     <style>
-        @layer reset{
+        @layer reset{kb
             button{
                 all: unset;
             }
